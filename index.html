@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome to Juan B. de la Torre's server</title>
+</head>
+<body style="background-color: skyblue;">
+    <h1 style="color:darkblue;">MAIN PAGE</h1>
+    <ul>
+
+    </b><li>List of species on the database</li><b>
+    <form action="listSpecies" method="get">
+    <input type="submit"/>
+    </form>
+    <p></p>
+
+
+    <b><li>Information about the karyotype of a species</li></b>
+    <form action="karyotype" method="get">
+        Species desired:  <input type="text" name="specie">
+    <input type="submit"/>
+    </form>
+
+
+    <p></p>
+    <b><li>Length of a specific chromosome</li></b>
+        <form action="chromosomeLength" method="get">
+            <br>Species and chromosome desired:</br>
+        Species:<input type="text" name="specie">
+        Chromosome: <input type="text" name="chromo">
+
+
+    <input type="submit"/>
+    </form>
+</ul>
+</body>
+</html>
