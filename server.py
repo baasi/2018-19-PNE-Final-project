@@ -110,7 +110,6 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
                 contents += "<li>"
                 contents += d['species'][index]['common_name']
                 contents += "</li>"
-
         contents += "</ol></body></html>"
 
         return contents
