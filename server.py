@@ -1,7 +1,5 @@
 import http.server
-import termcolor
 import socketserver
-from Seq import Seq
 import json
 import http.client
 import requests
@@ -12,7 +10,7 @@ SERVER = "https://rest.ensembl.org"
 ENDPOINT = ["/info/species", '/info/assembly']
 EPORT = 80
 
-TEST_REPORT = True
+TEST_REPORT = False
 
 socketserver.TCPServer.allow_reuse_address = True
 
@@ -96,15 +94,22 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
         writing_report_test("request: " + request)
         d = r.json()
 
-        writing_report_test("RESPUESTA: " + str(d))
-
         contents = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Species List</title></head>' \
                    '<body style="background-color: cornflowerblue;"><h1>List of species</h1><ol>'
 
-        for index in range(len(d['species'])):
-            contents += "<li>"
-            contents += d['species'][index]['common_name']
-            contents += "</li>"
+        l = self.path.split('=')[1]
+        if l == '':
+            for index in range(len(d['species'])):
+                contents += "<li>"
+                contents += d['species'][index]['common_name']
+                contents += "</li>"
+
+            contents += "</ol></body></html>"
+        else:
+            for index in range(len(d['species'][:int(l)])):
+                contents += "<li>"
+                contents += d['species'][index]['common_name']
+                contents += "</li>"
 
         contents += "</ol></body></html>"
 
@@ -123,9 +128,6 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
         print("CONTENT: ")
         print(d)
 
-        writing_report_test("Parameters: ")
-        writing_report_test("   Specie: " + specie)
-        writing_report_test("ANSWER: " + str(d))
 
         contents = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Karyotype of ' + specie + '</title></head>' \
                    '<body style="background-color: turquoise;"><h1>Karyotype of ' + specie + '</h1><ol>'
@@ -158,10 +160,6 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
 
         d = r.json()
 
-        writing_report_test("Parametros: ")
-        writing_report_test("   Specie: " + specie)
-        writing_report_test("   Chromo: " + chromo)
-        writing_report_test("RESPUESTA: " + str(d))
 
         length_chromosome = None
         for element in d["top_level_region"]:
