@@ -98,18 +98,26 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
                    '<body style="background-color: cornflowerblue;"><h1>List of species</h1><ol>'
 
         l = self.path.split('=')[1]
-        if l == '':
+        x = "limit"
+        if x in self.path:
+            if l == '':
+                for index in range(len(d['species'])):
+                    contents += "<li>"
+                    contents += d['species'][index]['common_name']
+                    contents += "</li>"
+
+                contents += "</ol></body></html>"
+            else:
+                for index in range(len(d['species'][:int(l)])):
+                    contents += "<li>"
+                    contents += d['species'][index]['common_name']
+                    contents += "</li>"
+        else:
             for index in range(len(d['species'])):
                 contents += "<li>"
                 contents += d['species'][index]['common_name']
                 contents += "</li>"
 
-            contents += "</ol></body></html>"
-        else:
-            for index in range(len(d['species'][:int(l)])):
-                contents += "<li>"
-                contents += d['species'][index]['common_name']
-                contents += "</li>"
         contents += "</ol></body></html>"
 
         return contents
