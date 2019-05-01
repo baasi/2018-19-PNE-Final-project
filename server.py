@@ -10,7 +10,7 @@ SERVER = "https://rest.ensembl.org"
 ENDPOINT = ["/info/species", '/info/assembly']
 EPORT = 80
 
-TEST_REPORT = False
+TEST_REPORT = False #If you wanna see
 
 socketserver.TCPServer.allow_reuse_address = True
 
@@ -97,23 +97,20 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
         contents = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Species List</title></head>' \
                    '<body style="background-color: cornflowerblue;"><h1>List of species</h1><ol>'
 
-        l = self.path.split('=')[1]
-        x = "limit"
-        if x in self.path:
-            if l == '':
-                for index in range(len(d['species'])):
-                    contents += "<li>"
-                    contents += d['species'][index]['common_name']
-                    contents += "</li>"
+        try:
+            limit = self.path.split('=')[1].split('&')[0]
+        except IndexError:
+            limit = 199
 
-                contents += "</ol></body></html>"
-            else:
-                for index in range(len(d['species'][:int(l)])):
-                    contents += "<li>"
-                    contents += d['species'][index]['common_name']
-                    contents += "</li>"
-        else:
+        if limit == '':
             for index in range(len(d['species'])):
+                contents += "<li>"
+                contents += d['species'][index]['common_name']
+                contents += "</li>"
+
+            contents += "</ol></body></html>"
+        else:
+            for index in range(len(d['species'][:int(l)])):
                 contents += "<li>"
                 contents += d['species'][index]['common_name']
                 contents += "</li>"
