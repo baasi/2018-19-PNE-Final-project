@@ -36,17 +36,17 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
                 end = self.path.split("?")[0]
                 print ("End =>", end)
                 if end == '/listSpecies':
-                        contents = self.handle_info_species()
+                        contents = self.info_species()
                         self.send_response(200)
                         self.send_header('Content-Type', 'text/html')
 
                 elif end == '/karyotype':
-                    contents = self.handle_info_assembly()
+                    contents = self.info_assembly()
                     self.send_response(200)
                     self.send_header('Content-Type', 'text/html')
 
                 elif end == '/chromosomeLength':
-                    contents = self.handle_length()
+                    contents = self.length_specie()
                     print("CONTENTS FUERA:", contents)
                     self.send_response(200)
                     self.send_header('Content-Type', 'text/html')
@@ -75,7 +75,7 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
 
         return
 
-    def handle_info_species(self):
+    def info_species(self):
         request = SERVER + ENDPOINT[0]
         r = requests.get(request, headers=headers)
         print("Sending request:", request)
@@ -106,7 +106,7 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
 
         return contents
 
-    def handle_info_assembly(self):
+    def info_assembly(self):
         specie = self.path.split("=")[1]
         specie = specie.replace("+", "_")
         request = SERVER + ENDPOINT[1] + "/" + specie
@@ -120,7 +120,7 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
         contents = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Karyotype of ' + specie + '</title></head>' \
                    '<body style="background-color: turquoise;"><h1>Karyotype of ' + specie + '</h1><ol>'
 
-        for index, elem in enumerate(d['karyotype']):
+        for i, elem in enumerate(d['karyotype']):
             contents += "<li>"
             contents += elem
             contents += "</li>"
@@ -129,7 +129,7 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
 
         return contents
 
-    def handle_length(self):
+    def length_specie(self):
         print("\nConnecting to server: {}:{}\n".format(SERVER, EPORT))
         specie = self.path.split("=")[1].split("&")[0]
         specie = specie.replace("+","_")
@@ -139,20 +139,16 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
         print("chromo='",chromo, "', specie = '", specie, "'", sep="")
 
         request = SERVER + ENDPOINT[1] + "/" + specie
-        print(request)
         r = requests.get(request, headers=headers)
 
         d = r.json()
 
-        length_chromosome = None
+        length = None
         for element in d["top_level_region"]:
-            print(element)
             if element['coord_system'] == 'chromosome' and element["name"] == chromo:
-                    length_chromosome = element["length"]
-        print ("Chromosome lenght =", length_chromosome)
+                    length = element["length"]
 
-        if length_chromosome == None:
-            print("No encontrado!")
+        if length == None:
             contents = '<!DOCTYPE html><html lang="en" dir="ltr"><head>' \
                        '<meta charset="UTF-8">' \
                        '<title>ERROR</title>' \
@@ -163,7 +159,7 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
                         '<a href="/">[main server]</a></body></html>'
         else:
             contents = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Lenght of chromosomo ' + chromo + ' for specie ' + specie + '</title></head>' \
-                   '<body><h1>The length of the chromosome ' + chromo + ' of the specie ' + specie + 'is ' + str(length_chromosome) + '.</h1>'
+                   '<body><h1>The length of the chromosome ' + chromo + ' of the specie ' + specie + 'is ' + str(length) + '.</h1>'
             contents += '</body></html>'
 
         return contents
@@ -177,5 +173,5 @@ with socketserver.TCPServer(("", PORT), Handler) as httpd:
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
-        print("Stop by the user")
+        print("Server stopped by the user!")
         httpd.server_close()
