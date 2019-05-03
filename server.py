@@ -34,7 +34,6 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
 
             else:
                 end = self.path.split("?")[0]
-                print ("End =>", end)
                 if end == '/listSpecies':
                         contents = self.info_species()
                         self.send_response(200)
@@ -47,7 +46,6 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
 
                 elif end == '/chromosomeLength':
                     contents = self.length_specie()
-                    print("CONTENTS FUERA:", contents)
                     self.send_response(200)
                     self.send_header('Content-Type', 'text/html')
 
@@ -76,9 +74,8 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
         return
 
     def info_species(self):
-        request = SERVER + ENDPOINT[0]
-        r = requests.get(request, headers=headers)
-        print("Sending request:", request)
+        req = SERVER + ENDPOINT[0]
+        r = requests.get(req, headers=headers)
         d = r.json()
 
         contents = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Species List</title></head>' \
@@ -109,13 +106,10 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
     def info_assembly(self):
         specie = self.path.split("=")[1]
         specie = specie.replace("+", "_")
-        request = SERVER + ENDPOINT[1] + "/" + specie
-        print ("Sending request:", request)
+        req = SERVER + ENDPOINT[1] + "/" + specie
 
-        r = requests.get(request, headers=headers)
+        r = requests.get(req, headers=headers)
         d = r.json()
-        print("CONTENT: ")
-        print(d)
 
         contents = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Karyotype of ' + specie + '</title></head>' \
                    '<body style="background-color: turquoise;"><h1>Karyotype of ' + specie + '</h1><ol>'
@@ -130,16 +124,14 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
         return contents
 
     def length_specie(self):
-        print("\nConnecting to server: {}:{}\n".format(SERVER, EPORT))
         specie = self.path.split("=")[1].split("&")[0]
         specie = specie.replace("+","_")
         if specie[-1] == '_':
             specie = specie[:-1]
         chromo = self.path.split("&")[1].split("=")[1]
-        print("chromo='",chromo, "', specie = '", specie, "'", sep="")
 
-        request = SERVER + ENDPOINT[1] + "/" + specie
-        r = requests.get(request, headers=headers)
+        req = SERVER + ENDPOINT[1] + "/" + specie
+        r = requests.get(req, headers=headers)
 
         d = r.json()
 
@@ -154,12 +146,12 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
                        '<title>ERROR</title>' \
                        '</head>' \
                        '<body style="background-color: tomato">' \
-                       '<h1>ERROR el nombre "' + chromo + '" no es válido.</h1>' \
+                       '<h1>ERROR that chromosome "' + chromo + '" does not exist.</h1>' \
                         '<p>Here there are the websites available: </p>' \
                         '<a href="/">[main server]</a></body></html>'
         else:
             contents = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Lenght of chromosomo ' + chromo + ' for specie ' + specie + '</title></head>' \
-                   '<body><h1>The length of the chromosome ' + chromo + ' of the specie ' + specie + 'is ' + str(length) + '.</h1>'
+                   '<body><h1>The length of the chromosome ' + chromo + ' of the specie ' + specie + ' is ' + str(length) + '.</h1>'
             contents += '</body></html>'
 
         return contents
@@ -173,5 +165,5 @@ with socketserver.TCPServer(("", PORT), Handler) as httpd:
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
-        print("Server stopped by the user!")
+        print("Server stopped by the user.")
         httpd.server_close()

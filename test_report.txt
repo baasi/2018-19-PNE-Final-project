@@ -28,7 +28,7 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Lenght of chromosomo A2 for specie cat</title></head><body><h1>The length of the chromosome A2 of the specie catis 171471747.</h1></body></html>
 
 -------- http://localhost:8000/chromosomeLength?specie=cat&chromo=4 ------------
-<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><title>ERROR</title></head><body style="background-color: tomato"><h1>ERROR el nombre "4" no es válido.</h1><p>Here there are the websites available: </p><a href="/">[main server]</a></body></html>
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><title>ERROR</title></head><body style="background-color: tomato"><h1>ERROR that chromosome "4" does not exist.</h1><p>Here there are the websites available: </p><a href="/">[main server]</a></body></html>
 
 -------- http://localhost:8000/chromosomeLength?specie=LION&chromo=4 -----------
 <!DOCTYPE html>
