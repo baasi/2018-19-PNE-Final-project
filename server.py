@@ -82,21 +82,21 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
                    '<body style="background-color: cornflowerblue;"><h1>List of species</h1><ol>'
 
         try:
-            limit = self.path.split('=')[1].split('&')[0]
+            lim = self.path.split('=')[1].split('&')[0]
         except IndexError:
-            limit = 199
+            lim = 199
 
-        if limit == '':
-            for index in range(len(d['species'])):
+        if lim == '':
+            for i in range(len(d['species'])):
                 contents += "<li>"
-                contents += d['species'][index]['common_name']
+                contents += d['species'][i]['common_name']
                 contents += "</li>"
 
             contents += "</ol></body></html>"
         else:
-            for index in range(len(d['species'][:int(limit)])):
+            for i in range(len(d['species'][:int(lim)])):
                 contents += "<li>"
-                contents += d['species'][index]['common_name']
+                contents += d['species'][i]['common_name']
                 contents += "</li>"
 
         contents += "</ol></body></html>"
@@ -114,9 +114,9 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
         contents = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Karyotype of ' + specie + '</title></head>' \
                    '<body style="background-color: turquoise;"><h1>Karyotype of ' + specie + '</h1><ol>'
 
-        for i, elem in enumerate(d['karyotype']):
+        for i, e in enumerate(d['karyotype']):
             contents += "<li>"
-            contents += elem
+            contents += e
             contents += "</li>"
 
         contents += "</ol></body></html>"
@@ -136,9 +136,9 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
         d = r.json()
 
         length = None
-        for element in d["top_level_region"]:
-            if element['coord_system'] == 'chromosome' and element["name"] == chromo:
-                    length = element["length"]
+        for e in d["top_level_region"]:
+            if e['coord_system'] == 'chromosome' and e["name"] == chromo:
+                    length = e["length"]
 
         if length == None:
             contents = '<!DOCTYPE html><html lang="en" dir="ltr"><head>' \
